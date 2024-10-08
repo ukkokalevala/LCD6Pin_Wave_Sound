@@ -1,0 +1,124 @@
+#include <LiquidCrystal.h>
+
+// Initialize the library with the numbers of the interface pins
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+// Pin for sound sensor
+int soundSensorPin = A0;
+
+// Custom characters to simulate wave patterns
+byte wave1[8] = {
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B11111,
+  B11111
+};
+
+byte wave2[8] = {
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B11111,
+  B11111,
+  B11111
+};
+
+byte wave3[8] = {
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B11111,
+  B11111,
+  B11111,
+  B11111
+};
+
+byte wave4[8] = {
+  B00000,
+  B00000,
+  B00000,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111
+};
+
+byte wave5[8] = {
+  B00000,
+  B00000,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111
+};
+
+byte wave6[8] = {
+  B00000,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111
+};
+
+byte wave7[8] = {
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111
+};
+
+void setup() {
+  // Set up the LCD's number of columns and rows
+  lcd.begin(16, 2);
+  
+  // Create custom characters to represent different wave heights
+  lcd.createChar(0, wave1);
+  lcd.createChar(1, wave2);
+  lcd.createChar(2, wave3);
+  lcd.createChar(3, wave4);
+  lcd.createChar(4, wave5);
+  lcd.createChar(5, wave6);
+  lcd.createChar(6, wave7);
+  
+  // Print initial message
+  lcd.setCursor(0, 0);
+  lcd.print("Sound Wave:");
+}
+
+void loop() {
+  // Read the analog value from the sound sensor (range 0-1023)
+  int soundValue = analogRead(soundSensorPin);
+  
+  // Map the sound value to a range suitable for simulating wave height
+  int waveHeight = map(soundValue, 0, 1023, 0, 6); // We have 7 wave patterns (0-6)
+  
+  // Clear the second row
+  lcd.setCursor(0, 1);
+  lcd.print("                "); // 16 spaces to clear the row
+  
+  // Display wave pattern based on sound level
+  lcd.setCursor(0, 1);
+  for (int i = 0; i < 16; i++) {
+    lcd.write(byte(waveHeight));  // Display corresponding wave pattern
+  }
+  
+  // Small delay to refresh the display
+  delay(200);
+}
